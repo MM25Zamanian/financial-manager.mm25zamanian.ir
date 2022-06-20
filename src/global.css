@@ -1,0 +1,192 @@
+@font-face {
+  font-family: 'Vazirmatn';
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 100%;
+  src: url(https://cdn.jsdelivr.net/npm/vazirmatn@32.101.0/fonts/webfonts/Vazirmatn[wght].woff2) format('woff2');
+  font-display: block;
+  unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF, U+1EE00-1EEFF;
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/lato/v23/S6u8w4BMUTPHh30AUi-qJCY.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/lato/v23/S6u8w4BMUTPHh30AXC-q.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/lato/v23/S6u9w4BMUTPHh7USSwaPGR_p.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/lato/v23/S6u9w4BMUTPHh7USSwiPGQ.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC,
+    U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+html.ios {
+  --ion-default-font: -apple-system, 'Vazirmatn', BlinkMacSystemFont, 'Helvetica Neue', 'Roboto', sans-serif;
+}
+
+html.md {
+  --ion-default-font: 'Vazirmatn', 'Roboto', 'Helvetica Neue', sans-serif;
+}
+
+html {
+  --ion-font-family: var(--ion-default-font);
+}
+
+:root {
+  --ion-color-primary: #2e8b57;
+  --ion-color-primary-rgb: 46, 139, 87;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #287a4d;
+  --ion-color-primary-tint: #439768;
+
+  --ion-background-color: #eee;
+  --ion-background-color-rgb: 238, 238, 238;
+
+  --ion-text-color: #01010e;
+  --ion-text-color-rgb: 1, 1, 14;
+
+  --ion-color-step-50: #e2e2e3;
+  --ion-color-step-100: #d6d6d8;
+  --ion-color-step-150: #cacacc;
+  --ion-color-step-200: #bfbfc1;
+  --ion-color-step-250: #b3b3b6;
+  --ion-color-step-300: #a7a7ab;
+  --ion-color-step-350: #9b9ba0;
+  --ion-color-step-400: #8f8f94;
+  --ion-color-step-450: #838389;
+  --ion-color-step-500: #78787e;
+  --ion-color-step-550: #6c6c73;
+  --ion-color-step-600: #606068;
+  --ion-color-step-650: #54545c;
+  --ion-color-step-700: #484851;
+  --ion-color-step-750: #3c3c46;
+  --ion-color-step-800: #30303b;
+  --ion-color-step-850: #252530;
+  --ion-color-step-900: #191924;
+  --ion-color-step-950: #0d0d19;
+
+  --ion-toolbar-background: var(--ion-color-primary);
+  --ion-toolbar-color: var(--ion-color-primary-contrast);
+
+  --ion-tab-bar-background: var(--ion-color-step-100);
+  --ion-tab-bar-border-color: var(--ion-color-step-250);
+  --ion-tab-bar-color: var(--ion-color-step-600);
+
+  --ion-card-background: var(--ion-tab-bar-background);
+  --ion-card-color: var(--ion-tab-bar-color);
+}
+
+.noscript {
+  text-align: center;
+  font-size: 2rem;
+  padding: 2em 1em;
+}
+
+.noscript p {
+  margin: 0.5em 0;
+}
+
+body.backdrop-no-scroll {
+  overflow: hidden;
+}
+
+body {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  position: fixed;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  transform: translateZ(0);
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-user-drag: none;
+  -ms-content-zooming: none;
+  word-wrap: break-word;
+  overscroll-behavior-y: none;
+  text-size-adjust: none;
+  background-color: var(--ion-background-color);
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  text-size-adjust: 100%;
+  font-family: var(--ion-font-family);
+}
+
+html:not(.hydrated) body {
+  display: none;
+}
+
+html.ion-ce body {
+  display: block;
+}
+
+html.plt-pwa {
+  height: 100vh;
+}
+
+html.plt-ios.plt-hybrid,
+html.plt-ios.plt-pwa {
+  --ion-statusbar-padding: 20px;
+}
+
+@supports (padding-top: 20px) {
+  html {
+    --ion-safe-area-top: var(--ion-statusbar-padding);
+  }
+}
+
+@supports (padding-top: constant(safe-area-inset-top)) {
+  html {
+    --ion-safe-area-top: constant(safe-area-inset-top);
+    --ion-safe-area-bottom: constant(safe-area-inset-bottom);
+    --ion-safe-area-left: constant(safe-area-inset-left);
+    --ion-safe-area-right: constant(safe-area-inset-right);
+  }
+}
+
+@supports (padding-top: env(safe-area-inset-top)) {
+  html {
+    --ion-safe-area-top: env(safe-area-inset-top);
+    --ion-safe-area-bottom: env(safe-area-inset-bottom);
+    --ion-safe-area-left: env(safe-area-inset-left);
+    --ion-safe-area-right: env(safe-area-inset-right);
+  }
+}
+
+ion-alert * {
+  font-family: var(--ion-font-family);
+}
