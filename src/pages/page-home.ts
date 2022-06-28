@@ -3,6 +3,7 @@ import {LocalizeController} from '@shoelace-style/localize/dist/index.js';
 import {css, html} from 'lit';
 import {customElement} from 'lit/decorators/custom-element.js';
 import {query} from 'lit/decorators/query.js';
+import {state} from 'lit/decorators/state.js';
 
 import {AppElement} from '../app-debt/app-element';
 import {dbPromise} from '../utilities/database';
@@ -10,8 +11,9 @@ import {_renderToast} from '../utilities/toast';
 
 import type {financialOperation} from '../utilities/database';
 import type {ListenerInterface} from '@alwatr/signal';
+import type {ScrollBaseCustomEvent, ScrollCustomEvent} from '@ionic/core';
 import type {IonModal} from '@ionic/core/components/ion-modal';
-import type {TemplateResult, CSSResult, PropertyValues} from 'lit';
+import type {TemplateResult, CSSResult} from 'lit';
 
 declare global {
   interface HTMLElementTagNameMap {
@@ -58,7 +60,10 @@ export class PageHome extends AppElement {
 
   protected _listenerList: Array<unknown> = [];
   protected _localize = new LocalizeController(this);
-  protected _financialOperationList: financialOperation[] = [];
+  protected _ionContentScroll = 0;
+  @state() protected _financialOperationList: financialOperation[] = [];
+  @state() protected _activeRange = 0;
+  @state() protected _canScrollToTop = false;
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -73,8 +78,14 @@ export class PageHome extends AppElement {
   override render(): TemplateResult {
     return html`
       <ion-header> ${this._renderToolbar()} </ion-header>
-      <ion-content>
-        ${this._renderFinancialOperationsCard()} ${this._renderFinancialOperationList()}
+      ${this._renderFinancialOperationsCard()}
+      <ion-content scroll-events @ionScroll=${this._scroll} @ionScrollEnd=${this._scrollEnd}>
+        ${this._renderFinancialOperationList()}
+        <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+          <ion-fab-button size="small" ?disabled=${!this._canScrollToTop} @click=${this._scrollToTop}>
+            <er-iconsax name="arrow-up" category="broken"></er-iconsax>
+          </ion-fab-button>
+        </ion-fab>
         <ion-fab vertical="bottom" horizontal="end" slot="fixed">
           <ion-fab-button href=${router.makeUrl({sectionList: ['create']})}>
             <er-iconsax name="add" category="broken"></er-iconsax>
@@ -96,24 +107,24 @@ export class PageHome extends AppElement {
         <ion-row class="fo__list">
           <ion-col class="fo__list__item">
             <ion-label class="fo__list__item-label">${this._localize.term('income')}</ion-label>
-            <span class="fo__list__item-value">${this._income.toLocaleString(this._localize.dir())}</span>
+            <span class="fo__list__item-value">${this._localize.number(this._income)}</span>
           </ion-col>
           <div class="fo__list-seprator"></div>
           <ion-col class="fo__list__item">
             <ion-label class="fo__list__item-label">${this._localize.term('expenses')}</ion-label>
-            <span class="fo__list__item-value">${this._expenses.toLocaleString(this._localize.dir())}</span>
+            <span class="fo__list__item-value">${this._localize.number(this._expenses)}</span>
           </ion-col>
           <div class="fo__list-seprator"></div>
           <ion-col class="fo__list__item">
             <ion-label class="fo__list__item-label">${this._localize.term('balance')}</ion-label>
-            <span class="fo__list__item-value">${this._balance.toLocaleString(this._localize.dir())}</span>
+            <span class="fo__list__item-value">${this._localize.number(this._balance)}</span>
           </ion-col>
         </ion-row>
       </ion-card>
     `;
   }
   protected _renderFinancialOperationList(): TemplateResult {
-    const listTemplate = this._financialOperationList.map((foItem) => {
+    const listTemplate = this._financialOperationList.slice(0, this._activeRange * 10 + 30).map((foItem) => {
       return html`
         <ion-item-sliding>
           <ion-item>
@@ -141,6 +152,28 @@ export class PageHome extends AppElement {
     return html` <ion-list> ${listTemplate} </ion-list> `;
   }
 
+  protected _scrollToTop(): void {
+    this.shadowRoot?.querySelector('ion-content')?.scrollToTop(500);
+  }
+  protected _scroll(event: ScrollCustomEvent): void {
+    if (event.detail.scrollTop > 0) {
+      this._canScrollToTop = true;
+    } else {
+      this._canScrollToTop = false;
+    }
+    this._ionContentScroll = event.detail.scrollTop;
+  }
+  protected _scrollEnd(event: ScrollBaseCustomEvent): void {
+    const ionList = event.target.querySelector('ion-list');
+    if (!ionList) return;
+
+    if (ionList.scrollHeight - event.target.scrollHeight === this._ionContentScroll) {
+      this._activeRange++;
+    } else if (this._ionContentScroll <= 1) {
+      this._activeRange = 0;
+    }
+  }
+
   protected async _deleteFinancialOpeation(key?: number): Promise<void> {
     if (key === undefined) return;
 
@@ -156,9 +189,17 @@ export class PageHome extends AppElement {
     await db
         .delete('financial-operation', key)
         .then(() => _renderToast(this._localize.term('the_operation_was_successful')))
-        .catch((error) => _renderToast(error));
+        .catch((error) => _renderToast(error, undefined, 'close'));
 
+    await this._updateFinancialOperationList();
     await loading.dismiss();
+  }
+  protected async _updateFinancialOperationList(): Promise<void> {
+    await dbPromise.then(async (db) => {
+      this._financialOperationList = (await db.getAllFromIndex('financial-operation', 'by-datetime', undefined, 1000))
+          .sort((a, b) => a.datetime.getTime() - b.datetime.getTime())
+          .reverse();
+    });
   }
 
   protected get _income(): number {
@@ -177,14 +218,11 @@ export class PageHome extends AppElement {
     return this._income - this._expenses;
   }
 
-  protected override updated(_changedProperties: PropertyValues): void {
-    super.updated(_changedProperties);
+  protected override firstUpdated(): void {
+    this._updateFinancialOperationList();
+  }
 
-    dbPromise.then(async (db) => {
-      this._financialOperationList = await db.getAll('financial-operation');
-      this.requestUpdate();
-    });
-
+  protected override updated(): void {
     this.shadowRoot?.querySelectorAll('ion-item-sliding').forEach((itemSliding) => {
       const item = itemSliding.querySelector('ion-item');
       const open = async (): Promise<void> => await itemSliding.open('start');
