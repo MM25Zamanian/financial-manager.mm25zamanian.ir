@@ -37,9 +37,6 @@ export class PageHome extends AppElement {
         display: flex;
         flex-direction: column;
       }
-      ion-list {
-        padding: 0 !important;
-      }
     `,
     css`
       .fo__list .fo__list__item {
@@ -79,8 +76,6 @@ export class PageHome extends AppElement {
   }
 
   override render(): TemplateResult {
-    console.log('render');
-
     return html`
       <ion-header> ${this._renderToolbar()} </ion-header>
       ${this._renderFinancialOperationsCard()}
@@ -112,26 +107,24 @@ export class PageHome extends AppElement {
         <ion-row class="fo__list">
           <ion-col class="fo__list__item">
             <ion-label class="fo__list__item-label">${this._localize.term('income')}</ion-label>
-            <span class="fo__list__item-value">${this._income.toLocaleString(this._localize.dir())}</span>
+            <span class="fo__list__item-value">${this._localize.number(this._income)}</span>
           </ion-col>
           <div class="fo__list-seprator"></div>
           <ion-col class="fo__list__item">
             <ion-label class="fo__list__item-label">${this._localize.term('expenses')}</ion-label>
-            <span class="fo__list__item-value">${this._expenses.toLocaleString(this._localize.dir())}</span>
+            <span class="fo__list__item-value">${this._localize.number(this._expenses)}</span>
           </ion-col>
           <div class="fo__list-seprator"></div>
           <ion-col class="fo__list__item">
             <ion-label class="fo__list__item-label">${this._localize.term('balance')}</ion-label>
-            <span class="fo__list__item-value">${this._balance.toLocaleString(this._localize.dir())}</span>
+            <span class="fo__list__item-value">${this._localize.number(this._balance)}</span>
           </ion-col>
         </ion-row>
       </ion-card>
     `;
   }
   protected _renderFinancialOperationList(): TemplateResult {
-    const i = this._activeRange;
-
-    const listTemplate = this._financialOperationList.slice(0, i * 10 + 21).map((foItem) => {
+    const listTemplate = this._financialOperationList.slice(0, this._activeRange * 10 + 30).map((foItem) => {
       return html`
         <ion-item-sliding>
           <ion-item>
@@ -196,11 +189,17 @@ export class PageHome extends AppElement {
     await db
         .delete('financial-operation', key)
         .then(() => _renderToast(this._localize.term('the_operation_was_successful')))
-        .catch((error) => _renderToast(error));
+        .catch((error) => _renderToast(error, undefined, 'close'));
 
+    await this._updateFinancialOperationList();
     await loading.dismiss();
-
-    this._financialOperationList = await db.getAll('financial-operation', undefined, 1000);
+  }
+  protected async _updateFinancialOperationList(): Promise<void> {
+    await dbPromise.then(async (db) => {
+      this._financialOperationList = (await db.getAllFromIndex('financial-operation', 'by-datetime', undefined, 1000))
+          .sort((a, b) => a.datetime.getTime() - b.datetime.getTime())
+          .reverse();
+    });
   }
 
   protected get _income(): number {
@@ -220,9 +219,7 @@ export class PageHome extends AppElement {
   }
 
   protected override firstUpdated(): void {
-    dbPromise.then(async (db) => {
-      this._financialOperationList = await db.getAll('financial-operation', undefined, 1000);
-    });
+    this._updateFinancialOperationList();
   }
 
   protected override updated(): void {
