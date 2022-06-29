@@ -26,13 +26,11 @@
     "watch:ts": "yarn build:ts --watch --preserveWatchOutput"
   },
   "dependencies": {
-    "@alwatr/fetch": "^0.11.0",
-    "@alwatr/i18n": "^0.11.0",
     "@alwatr/logger": "^0.11.0",
-    "@alwatr/math": "^0.11.0",
     "@alwatr/router": "^0.11.0",
     "@alwatr/signal": "^0.11.0",
     "@erbium/iconsax": "^0.1.0",
+    "@google-web-components/google-chart": "^5.0.2",
     "@ionic/core": "^6.1.5",
     "@shoelace-style/localize": "^3.0.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
@@ -53,7 +51,7 @@
     "@web/rollup-plugin-polyfills-loader": "^1.2.0",
     "eslint": "^8.11.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-import-resolver-typescript": "^2.7.0",
+    "eslint-import-resolver-typescript": "^3.1.1",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-wc": "^1.3.2",
     "lerna": "^5.1.4",

@@ -7,6 +7,11 @@ export const mainTabBar = [
     icon: 'home-2',
   },
   {
+    id: 'chart',
+    title: 'chart',
+    icon: 'chart-1',
+  },
+  {
     id: 'about',
     title: 'about',
     icon: 'info-circle',
@@ -31,4 +36,9 @@ export const financialCategories: financialCategory[] = [
   {name: 'other', icon: 'category-2', type: 'expenses'},
 ];
 
-export type financialCategory = {name: string; icon: iconsaxNames; type: typeof financialOperationTypes[number]};
+export interface financialCategory {
+  name: string;
+  icon: iconsaxNames;
+  type: typeof financialOperationTypes[number];
+  value?: number;
+}
