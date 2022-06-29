@@ -17,6 +17,7 @@ import {dbPromise} from './utilities/database';
 
 import './pages/page-home';
 import './pages/page-create';
+import './pages/page-charts';
 import './pages/page-about';
 
 import type {RoutesConfig} from '@alwatr/router';
@@ -100,6 +101,9 @@ export class AppIndex extends AppElement {
       create: {
         render: () => html`<page-create class="ion-page can-go-back"></page-create>`,
       },
+      chart: {
+        render: () => html`<page-charts class="ion-page"></page-charts>`,
+      },
       about: {
         render: () => html`<page-about class="ion-page"></page-about>`,
       },
@@ -136,6 +140,21 @@ export class AppIndex extends AppElement {
         .then((db) => {
           this._logger.logProperty('db', db);
         // db.getAllKeys('financial-operation').then((d) => d.forEach((i) => db.delete('financial-operation', i)));
+        // let i = 0;
+        // function putting(): void {
+        //   db.put('financial-operation', {
+        //     description: 'حقوق پونیشا',
+        //     category: {name: 'other', icon: 'category-2', type: 'income'},
+        //     datetime: new Date(Math.floor(2000 + i / 3), Math.round((i * 12) / 100), Math.round((i * 29) / 100)),
+        //     type: 'income',
+        //     value: 10,
+        //   });
+        //   if (i < 100) {
+        //     setTimeout(putting, 10);
+        //   }
+        //   i++;
+        // }
+        // putting();
         })
         .catch((error) => {
           this._logger.error('db', '400', error);
